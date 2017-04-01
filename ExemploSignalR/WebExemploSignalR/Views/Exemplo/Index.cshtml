@@ -4,47 +4,68 @@
 
 @section scripts
 {
+
     @Scripts.Render("~/bundles/SignalR")
-    <script src="~/sinalr/hubs"></script>
+    <script src="~/signalr/hubs"></script>
 
     <script type="text/javascript">
+
         $(function () {
 
             var cnn = $.connection.exemploHub;
+            var data = new Date();
 
-            cnn.client.exibirMensagem = function(mensagem)
-            {
-                $("#mensagem").text(mensagem);
+            cnn.client.exibirMensagem = function (mensagem) {
+
+                $("#mensagemArea").append(data.toLocaleDateString() + " " + data.toLocaleTimeString() + " " +mensagem + "<br/>");
+
             }
 
-            function EnviarMensagem()
-            {
+            function Enviar() {
+
                 var texto = $("#valor").val();
 
                 cnn.server.mensagemParaTodos(texto);
             }
 
             $.connection.hub.start();
-            
 
             $("#btnEnviar").click(function () {
 
-                $("#valor").val("");
+                Enviar();
 
-                EnviarMensagem();
+                $("#valor").val("");
             });
 
+
+            $(document).keypress(function (e) {
+
+                if (e.which == 13) {
+      
+                    Enviar();
+
+                    $("#valor").val("");
+
+                }
+            })
+
         });
-        
-    </script> 
-    
+
+    </script>
+
 }
 
+<hr />
 <div class="form-group">
     <label for="valor">Mensagem:</label>
-    <input type="text" id="valor" class="form-control" placeholder="Digite sua mensagem..." autofocus autocomplete="off"/>  
+    <input type="text" id="valor" class="form-control" placeholder="Digite sua mensagem..." autofocus autocomplete="off" />
+
+    <br />
+    <button type="button" id="btnEnviar" class="btn btn-primary">Enviar</button>
+
 </div>
 
-<button type="button" id="btnEnviar" class="btn btn-primary" >Enviar</button>
+<hr />
+<label>Mensagens:</label>
+<div class="form-group" id="mensagemArea"></div>
 
-<div id="mensagem"></div>
