@@ -1,0 +1,50 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/SignalR")
+    <script src="~/sinalr/hubs"></script>
+
+    <script type="text/javascript">
+        $(function () {
+
+            var cnn = $.connection.exemploHub;
+
+            cnn.client.exibirMensagem = function(mensagem)
+            {
+                $("#mensagem").text(mensagem);
+            }
+
+            function EnviarMensagem()
+            {
+                var texto = $("#valor").val();
+
+                cnn.server.mensagemParaTodos(texto);
+            }
+
+            $.connection.hub.start();
+            
+
+            $("#btnEnviar").click(function () {
+
+                $("#valor").val("");
+
+                EnviarMensagem();
+            });
+
+        });
+        
+    </script> 
+    
+}
+
+<div class="form-group">
+    <label for="valor">Mensagem:</label>
+    <input type="text" id="valor" class="form-control" placeholder="Digite sua mensagem..." autofocus autocomplete="off"/>  
+</div>
+
+<button type="button" id="btnEnviar" class="btn btn-primary" >Enviar</button>
+
+<div id="mensagem"></div>
